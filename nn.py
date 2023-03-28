@@ -148,7 +148,7 @@ class StyleExtractor(Model):
 
     def __init__(self):
         super().__init__()
-        self.mobilenet = MobileNetV2(include_top=False, pooling=None, weights='imagenet', input_shape=(96, 96, 3))
+        self.mobilenet = MobileNetV2(include_top=False, pooling=None, weights='imagenet', input_shape=(1, 96, 757, 3))
         self.local_pool = AveragePooling2D((3,3))
         self.global_avg_pool = GlobalAveragePooling2D()
         self.freeze_all_layers()
