@@ -148,7 +148,7 @@ class StyleExtractor(Model):
 
     def __init__(self):
         super().__init__()
-        self.mobilenet = MobileNetV2(include_top=False, pooling=None, weights='imagenet', input_shape=(1, 96, 757, 3))
+        self.mobilenet = MobileNetV2(include_top=False, pooling=None, weights='imagenet')
         self.local_pool = AveragePooling2D((3,3))
         self.global_avg_pool = GlobalAveragePooling2D()
         self.freeze_all_layers()
@@ -161,7 +161,7 @@ class StyleExtractor(Model):
         x = tf.cast(im, tf.float32)
         x = (x / 127.5) - 1     
         x = tf.repeat(x, 3, axis=-1)
-        x = tf.reshape(x, [96, 96, 3])
+        
         x = self.mobilenet(x, training=training)
         x = self.local_pool(x)
         output = tf.squeeze(x, axis=1)
