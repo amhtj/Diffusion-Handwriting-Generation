@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 import utils
 import nn
 import argparse
@@ -35,10 +34,8 @@ def main():
     else: 
         sourcename = args.writersource
  
-    L = 60
     tokenizer = utils.Tokenizer()
     beta_set = utils.get_beta_set()
-    alpha_set = tf.math.cumprod(1-beta_set)
 
     C1 = args.channels
     C2 = C1 * 3//2
