@@ -121,7 +121,9 @@ def preprocess_data(path, max_text_len, max_seq_len, img_width, img_height):
     return strokes, texts, samples
     
 def create_dataset(strokes, texts, samples, style_extractor, batch_size, buffer_size):    
-    #we DO NOT SHUFFLE here, because we will shuffle later
+    
+    #authors shuffle the dataset later, it works without autotune
+    
     samples = tf.data.Dataset.from_tensor_slices(samples).batch(batch_size)
     for count, s in enumerate(samples):
         style_vec = style_extractor(s)
@@ -131,7 +133,7 @@ def create_dataset(strokes, texts, samples, style_extractor, batch_size, buffer_
     style_vectors = style_vectors.astype('float32')
     
     dataset = tf.data.Dataset.from_tensor_slices((strokes, texts, style_vectors))
-    dataset = dataset.shuffle(buffer_size).batch(batch_size, drop_remainder=True).prefetch(tf.data.experimental.AUTOTUNE)
+    dataset = dataset.shuffle(buffer_size).batch(batch_size, drop_remainder=True)
     return dataset
     
 class Tokenizer:
