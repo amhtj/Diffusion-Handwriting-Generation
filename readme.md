@@ -7,6 +7,10 @@ The model was launched on a HSE supercomputer, via a connection to Mountain Duck
 Requirements from the authors: python 3.7, Tensorflow 2.3
 My requirements: Python 3.11, TF 2.12.
 
+I retrained the model as a research, as I could not teach her into Russian.This is due to the fact that it took a long time to fix errors in the code. Weights are uploaded via the link to my GDrive (too large for repo):
+
+https://drive.google.com/file/d/1Cvkd1Iq-r-rvH9HO8vgCap4Lzt7aAi-r/view?usp=share_link
+
 To get an inference, run inference.py (with arguments, see the file). To retrain model run train.py. Arguments can be changed. 
 
 IAM Dataset from this project can be downloaded only with VPN (IAM dataset represented by a Swiss laboratory).
