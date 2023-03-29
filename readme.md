@@ -25,4 +25,4 @@ ascii-all.tar.gz              -   the text labels for the dataset
 
 After that, we extracting these contents and put them in the ./data directory. 
 
-The authors calculated the FID metric, I rewrote it (library incompatibility prompted this) and added the Inseption calculation.
+The authors calculated the FID metric, I rewrote it (library incompatibility prompted this) and added the Inseption, CLIP calculation.
