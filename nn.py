@@ -106,17 +106,6 @@ class InvSqrtSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         arg2 = step * (self.warmup_steps ** -1.5)
         return tf.math.rsqrt(self.d_model) * tf.math.minimum(arg1, arg2)
 
-class AffineTransformLayer(Layer):
-    def __init__(self, filters):
-        super().__init__()
-        self.gamma_dense = Dense(filters, bias_initializer='ones')
-        self.beta_dense = Dense(filters)
-    
-    def call(self, x, sigma):
-        gammas = self.gamma_dense(sigma)
-        betas = self.beta_dense(sigma)
-        return x * gammas + betas
-
 class ConvSubLayer(Model):
     def __init__(self, filters, dils=[1,1], activation='swish', drop_rate=0.0):
         super().__init__()
