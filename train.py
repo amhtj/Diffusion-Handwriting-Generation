@@ -72,8 +72,6 @@ def main():
     C3 = C1 * 2
     MAX_SEQ_LEN = MAX_SEQ_LEN - (MAX_SEQ_LEN%8) + 8
 
-
-    tokenizer = utils.Tokenizer()
     beta_set = utils.get_beta_set()
     alpha_set = tf.math.cumprod(1-beta_set)
 
@@ -86,7 +84,7 @@ def main():
     strokes, texts, samples = utils.preprocess_data(path, MAX_TEXT_LEN, MAX_SEQ_LEN, WIDTH, 96)
     dataset = utils.create_dataset(strokes, texts, samples, style_extractor, BATCH_SIZE)
 
-    train(dataset, NUM_STEPS, model, optimizer, alpha_set, PRINT_EVERY, SAVE_EVERY)
+    train(dataset, 600, model, optimizer, alpha_set, PRINT_EVERY, SAVE_EVERY)
 
 if __name__ == '__main__':
     main()
