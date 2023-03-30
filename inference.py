@@ -1,10 +1,20 @@
+import os
+import sys
+
 import tensorflow as tf
 import numpy as np
+import math
+
+import tarfile
+
 import utils
 import nn
 import argparse
-import os
 import preprocessing
+
+model_dir = './data/imagenet'
+data_url = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
+softmax = None
 
 def main():
     parser = argparse.ArgumentParser()  
@@ -34,8 +44,10 @@ def main():
     else: 
         sourcename = args.writersource
  
+    
     tokenizer = utils.Tokenizer()
     beta_set = utils.get_beta_set()
+    
 
     C1 = args.channels
     C2 = C1 * 3//2
@@ -56,6 +68,84 @@ def main():
     utils.run_batch_inference(model, beta_set, args.textstring, style_vector, 
                                 tokenizer=tokenizer, time_steps=timesteps, diffusion_mode=args.diffmode, 
                                 show_samples=args.show, path=args.name)
+
+
+
+
+
+def get_inception_score(create_session, imgs, splits=10, bs=100):
+    init_inception(create_session)
+    score = _get_inception_score(create_session, imgs, splits, bs)
+    tf.reset_default_graph()
+    return score
+
+
+def _get_inception_score(create_session, images, splits=10, bs=100):
+    assert (type(images) == list)
+    assert (type(images[0]) == np.ndarray)
+    assert (len(images[0].shape) == 3)
+    assert (np.max(images[0]) > 10)
+    assert (np.min(images[0]) >= 0.0)
+    inps = []
+    for img in images:
+        img = img.astype(np.float32)
+        inps.append(np.expand_dims(img, 0))
+    with create_session() as sess:
+        preds = []
+        n_batches = int(math.ceil(float(len(inps)) / float(bs)))
+        for i in range(n_batches):
+            #sys.stdout.write(".")
+            #sys.stdout.flush()
+            inp = inps[(i * bs):min((i + 1) * bs, len(inps))]
+            inp = np.concatenate(inp, 0)
+            pred = sess.run(softmax, {'ExpandDims:0': inp})
+            preds.append(pred)
+        preds = np.concatenate(preds, 0)
+        scores = []
+        for i in range(splits):
+            part = preds[(i * preds.shape[0] // splits):((i + 1) * preds.shape[0] // splits), :]
+            kl = part * (np.log(part) - np.log(np.expand_dims(np.mean(part, 0), 0)))
+            kl = np.mean(np.sum(kl, 1))
+            scores.append(np.exp(kl))
+        return np.mean(scores), np.std(scores)
+
+
+def init_inception(create_session):
+    global softmax
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+    filename = data_url.split('/')[-1]
+    filepath = os.path.join(model_dir, filename)
+    if not os.path.exists(filepath):
+        def _progress(count, block_size, total_size):
+            sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename, float(count * block_size) / float(total_size) * 100.0))
+            sys.stdout.flush()
+            
+        print()
+    tarfile.open(filepath, 'r:gz').extractall(model_dir)
+    with tf.gfile.FastGFile(os.path.join(model_dir, 'classify_img.pb'), 'rb') as f:
+        graph_def = tf.GraphDef()
+        graph_def.ParseFromString(f.read())
+        _ = tf.import_graph_def(graph_def, name='')
+
+    with create_session() as sess:
+        pool3 = sess.graph.get_tensor_by_name('pool_3:0')
+        ops = pool3.graph.get_operations()
+        for op_idx, op in enumerate(ops):
+            for o in op.outputs:
+                shape = o.get_shape()
+                shape = [s.value for s in shape]
+                new_shape = []
+                for j, s in enumerate(shape):
+                    if s == 1 and j == 0:
+                        new_shape.append(None)
+                    else:
+                        new_shape.append(s)
+          
+                o.__dict__['_shape_val'] = tf.TensorShape(new_shape)
+        w = sess.graph.get_operation_by_name("softmax/logits/MatMul").inputs[1]
+        logits = tf.matmul(tf.squeeze(pool3, [1, 2]), w)
+        softmax = tf.nn.softmax(logits)
 
 if __name__ == '__main__':
     main()
