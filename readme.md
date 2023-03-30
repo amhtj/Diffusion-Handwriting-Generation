@@ -4,6 +4,12 @@ A number of errors have been found, most of which are related to how the Tensorf
 
 The model was launched on a HSE supercomputer, via a connection to Mountain Duck. Unfortunately, the problem with the slash did not allow to continue training, which is why the calculations were transferred to another supercomputer (VTB). 
 
+Results of the generation: without weights (1) and with authors weights (2):
+
+<img src="/res_ex.png" alt="Alt text">
+
+<img src="/res_ex_2.png">
+
 Requirements from the authors: python 3.7, Tensorflow 2.3
 My requirements: Python 3.11, TF 2.12.
 
