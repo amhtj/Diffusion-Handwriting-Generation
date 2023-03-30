@@ -34,7 +34,6 @@ def show(strokes, name='', show_output=True, scale=1):
 def get_alphas(batch_size, alpha_set): 
     alpha_indices = tf.random.uniform([batch_size, 1], maxval=len(alpha_set) - 1, dtype=tf.int32)
     lower_alphas = tf.gather_nd(alpha_set, alpha_indices)
-    upper_alphas = tf.gather_nd(alpha_set, alpha_indices+1)
     alphas = tf.random.uniform(lower_alphas.shape, maxval=1) * (upper_alphas - lower_alphas) 
     alphas += lower_alphas
     alphas = tf.reshape(alphas, [batch_size, 1, 1])
@@ -50,7 +49,7 @@ def new_diffusion_step(xt, eps, beta, alpha, alpha_next):
     x_t_minus1 += tf.random.normal(xt.shape) * tf.sqrt(1-alpha_next)
     return x_t_minus1
     
-def run_batch_inference(model, beta_set, text, style, tokenizer=None, time_steps=480, diffusion_mode='new', show_every=None, show_samples=True, path=None):
+def run_batch_inference(model, beta_set, text, style, time_steps=300, diffusion_mode='new', show_every=None, show_samples=True, path=None):
     if isinstance(text, str):
         text = tf.constant([tokenizer.encode(text)+[1]])
     elif isinstance(text, list) and isinstance(text[0], str):

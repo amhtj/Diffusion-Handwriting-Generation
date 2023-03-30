@@ -1,6 +1,4 @@
 import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
 import utils
 import nn
 import time
@@ -23,11 +21,11 @@ def train_step(x, pen_lifts, text, style_vectors, glob_args):
     train_loss(loss)
     return score, att
 
-def train(dataset, iterations, model, optimizer, alpha_set, print_every=1000, save_every=10000):
+def train(dataset, iterations, model, optimizer, alpha_set, print_every=500, save_every=1000):
     s = time.time()
-    bce = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+    bce = tf.losses.BinaryCrossentropy()
     train_loss = tf.keras.metrics.Mean()
-    for count, (strokes, text, style_vectors) in enumerate(dataset.repeat(5000)):
+    for count, (strokes, text, style_vectors) in enumerate(dataset.repeat(2000)):
         strokes, pen_lifts = strokes[:, :, :2], strokes[:, :, 2:]
         glob_args = model, alpha_set, bce, train_loss, optimizer
         model_out, att = train_step(strokes, pen_lifts, text, style_vectors, glob_args)
@@ -37,7 +35,7 @@ def train(dataset, iterations, model, optimizer, alpha_set, print_every=1000, sa
             train_loss.reset_states()
 
         if (optimizer.iterations+1) % save_every==0:
-            save_path = ckpt_path + './weights/model_step%d.h5' % (optimizer.iterations+1)
+            save_path = './weights/model_step%d.h5' % (optimizer.iterations+1) 
             model.save_weights(save_path)
             
         if optimizer.iterations > iterations:
@@ -47,7 +45,7 @@ def train(dataset, iterations, model, optimizer, alpha_set, print_every=1000, sa
 def main():
     parser = argparse.ArgumentParser()    
     parser.add_argument('--steps', help='number of trainsteps, default 60k', default=60000, type=int)
-    parser.add_argument('--batchsize', help='default 96', default=96, type=int)
+    parser.add_argument('--batchsize', help='default 96', default=128, type=int)
     parser.add_argument('--seqlen', help='sequence length during training, default 480', default=480, type=int)
     parser.add_argument('--textlen', help='text length during training, default 50', default=50, type=int)
     parser.add_argument('--width', help='offline image width, default 1400', default=1400, type=int)
@@ -74,8 +72,7 @@ def main():
     C3 = C1 * 2
     MAX_SEQ_LEN = MAX_SEQ_LEN - (MAX_SEQ_LEN%8) + 8
 
-    BUFFER_SIZE = 3000
-    L = 60
+
     tokenizer = utils.Tokenizer()
     beta_set = utils.get_beta_set()
     alpha_set = tf.math.cumprod(1-beta_set)
@@ -87,7 +84,7 @@ def main():
     
     path = './data/train_strokes.p'
     strokes, texts, samples = utils.preprocess_data(path, MAX_TEXT_LEN, MAX_SEQ_LEN, WIDTH, 96)
-    dataset = utils.create_dataset(strokes, texts, samples, style_extractor, BATCH_SIZE, BUFFER_SIZE)
+    dataset = utils.create_dataset(strokes, texts, samples, style_extractor, BATCH_SIZE)
 
     train(dataset, NUM_STEPS, model, optimizer, alpha_set, PRINT_EVERY, SAVE_EVERY)
 

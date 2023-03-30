@@ -24,7 +24,7 @@ def positional_encoding(position, C, pos_factor=1):
     pos_encoding = angle_rads[np.newaxis, ...]    
     return tf.cast(pos_encoding, dtype=tf.float32)
     
-def ff_network(C, dff=768, act_before=True):
+def ff_network(C, dff=724, act_before=False):
     ff_layers = [
         Dense(dff, activation='swish'),
         Dense(C)    
