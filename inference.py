@@ -70,9 +70,6 @@ def main():
                                 show_samples=args.show, path=args.name)
 
 
-
-
-
 def get_inception_score(create_session, imgs, splits=10, bs=100):
     init_inception(create_session)
     score = _get_inception_score(create_session, imgs, splits, bs)
@@ -128,6 +125,24 @@ def init_inception(create_session):
         graph_def.ParseFromString(f.read())
         _ = tf.import_graph_def(graph_def, name='')
 
+        model, preprocess = clip.load("ViT-B/32")
+        
+
+    def init_clip(screate_session, images, splits=10, bs=100, self, clip, preprocess):
+         super().__init__()
+            self.clip=clip
+            self.preprocess=preprocess
+                
+        def forward(self, x):
+            batch_features=[]
+            with tf.no_grad():
+                
+                x = self.transform(x[0])
+                image = self.preprocess(x).unsqueeze(0)
+                image_features = model.encode_image(image)
+                batch_features.append(image_features)
+                return tf.cat(batch_features)
+
     with create_session() as sess:
         pool3 = sess.graph.get_tensor_by_name('pool_3:0')
         ops = pool3.graph.get_operations()
@@ -146,6 +161,7 @@ def init_inception(create_session):
         w = sess.graph.get_operation_by_name("softmax/logits/MatMul").inputs[1]
         logits = tf.matmul(tf.squeeze(pool3, [1, 2]), w)
         softmax = tf.nn.softmax(logits)
+
 
 if __name__ == '__main__':
     main()
