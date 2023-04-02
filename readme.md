@@ -19,7 +19,7 @@ https://drive.google.com/file/d/1Cvkd1Iq-r-rvH9HO8vgCap4Lzt7aAi-r/view?usp=share
 
 To get an inference, run inference.py (with arguments, see the file). To retrain model run train.py. Arguments can be changed. 
 
-IAM Dataset from this project can be downloaded only with VPN (IAM dataset represented by a Swiss laboratory).
+IAM Dataset from this project can be downloaded here:
 
 https://fki.tic.heia-fr.ch/databases/download-the-iam-on-line-handwriting-database
 
