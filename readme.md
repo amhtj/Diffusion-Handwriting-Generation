@@ -2,7 +2,7 @@ Implementation of the code from the paper "Diffusion Models for Handwriting Gene
 
 A number of errors have been found, most of which are related to how the Tensorflow has changed (2.3 vs. 2.12). Internal mathematical functions have been changed, due to which we observe a discrepancy in the final sizes of tensors. 
 
-The model was launched on a HSE supercomputer, via a connection to Mountain Duck. Unfortunately, the problem with the slash did not allow to continue training, which is why the calculations were transferred to another supercomputer (VTB). 
+The model was launched on a HSE supercomputer, via a connection to Mountain Duck.  
 
 Results of the generation: without weights (1) and with authors weights (2):
 
@@ -13,7 +13,7 @@ Results of the generation: without weights (1) and with authors weights (2):
 Requirements from the authors: python 3.7, Tensorflow 2.3
 My requirements: Python 3.11, TF 2.12.
 
-I retrained the model as a research, as I could not teach her into Russian.This is due to the fact that it took a long time to fix errors in the code. Weights are uploaded via the link to my GDrive (too large for repo):
+I rewrited and trained the model as a research, as I could not teach her into Russian. This is due to the fact that it took a long time to fix errors in the authors code. Weights are uploaded via the link to my GDrive (too large for repo):
 
 https://drive.google.com/file/d/1Cvkd1Iq-r-rvH9HO8vgCap4Lzt7aAi-r/view?usp=share_link
 
