@@ -4,11 +4,10 @@ A number of errors have been found, most of which are related to how the Tensorf
 
 The model was launched on a HSE supercomputer, via a connection to Mountain Duck.  
 
-Results of the generation: without weights (1) and with authors weights (2):
+Results of the generation: without weights:
 
 <img src="/res_ex.png" alt="Alt text">
 
-<img src="/res_ex_2.png">
 
 Requirements from the authors: python 3.7, Tensorflow 2.3
 My requirements: Python 3.11, TF 2.12.
