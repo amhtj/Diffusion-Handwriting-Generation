@@ -13,7 +13,7 @@ Results of the generation: without weights (1) and with authors weights (2):
 Requirements from the authors: python 3.7, Tensorflow 2.3
 My requirements: Python 3.11, TF 2.12.
 
-I rewrited and trained the model as a research, as I could not teach her into Russian. This is due to the fact that it took a long time to fix errors in the authors code. Weights are uploaded via the link to my GDrive (too large for repo):
+I rewrited and trained the model. Weights are uploaded via the link to my GDrive (too large for repo):
 
 https://drive.google.com/file/d/1Cvkd1Iq-r-rvH9HO8vgCap4Lzt7aAi-r/view?usp=share_link
 
