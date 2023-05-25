@@ -6,7 +6,7 @@ The model was launched on a HSE supercomputer, via a connection to Mountain Duck
 
 Results of the generation: without weights:
 
-<img src="/res_ex.png" alt="Alt text">
+<img src="/res_ex.png" alt="Alt text" width=30% height=30%>
 
 
 Requirements from the authors: python 3.7, Tensorflow 2.3
